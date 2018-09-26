@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="dnet:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/dnet_jar</output-path>
+    <root id="archive" name="dnet.jar">
+      <element id="module-output" name="dnet" />
+    </root>
+  </artifact>
+</component>
