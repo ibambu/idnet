@@ -184,7 +184,7 @@ public class DeviceSearch {
             InetAddress address = InetAddress.getByName("224.149.237.193");
             multicastSocket.setLoopbackMode(false);
             multicastSocket.joinGroup(address);
-            DatagramPacket sendDataPacket = new DatagramPacket(serachBytes, serachBytes.length, address, 5);
+            DatagramPacket sendDataPacket = new DatagramPacket(serachBytes, serachBytes.length, address, 27473);
             multicastSocket.send(sendDataPacket);
             /**
              * 接收报文
