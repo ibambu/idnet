@@ -116,7 +116,7 @@ public class UdmLog {
             httpURLConnection.setUseCaches(false);
             // 使用POST方法
             httpURLConnection.setRequestMethod("POST");
-            httpURLConnection.setRequestProperty("Connection", "Keep-Alive");
+            httpURLConnection.setRequestProperty("ConnectionConf", "Keep-Alive");
             httpURLConnection.setRequestProperty("Charset", "UTF-8");
             httpURLConnection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
 

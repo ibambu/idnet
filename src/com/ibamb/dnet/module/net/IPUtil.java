@@ -1,33 +1,63 @@
 package com.ibamb.dnet.module.net;
 
 
+import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
+import java.util.*;
 
 
 public class IPUtil {
 
 
+    public static InetAddress getLocalAddress() {
+        InetAddress localAddress = null;
+        try {
+            Enumeration nis = NetworkInterface.getNetworkInterfaces();
+            while (nis.hasMoreElements()) {
+                NetworkInterface ni = (NetworkInterface) nis.nextElement();
+                List<InterfaceAddress> list = ni.getInterfaceAddresses();
+                boolean isFound = false;
+                for (InterfaceAddress localAddress1 : list) {
+                    InetAddress inetAddress = localAddress1.getAddress();
+                    if (inetAddress instanceof Inet4Address
+                            && !inetAddress.isLoopbackAddress()
+                            && inetAddress.isSiteLocalAddress()) {
+                        localAddress = inetAddress;
+                        isFound = true;
+                        break;
+                    }
+                }
+                if (isFound) {
+                    break;
+                }
+            }
+        } catch (Exception e) {
+
+        }
+        return localAddress;
+    }
+
     /**
      * 校验IP地址格式
+     *
      * @param ipAddress
      * @return
      */
-    public static boolean isIPAddress(String ipAddress){
+    public static boolean isIPAddress(String ipAddress) {
         boolean isIp = false;
-        try{
-           InetAddress address = InetAddress.getByName(ipAddress);
-           if(address!=null){
-               isIp =true;
-           }
-        }catch (Exception e){
+        try {
+            InetAddress address = InetAddress.getByName(ipAddress);
+            if (address != null) {
+                isIp = true;
+            }
+        } catch (Exception e) {
             isIp = false;
         }
         return isIp;
     }
+
     /**
      * 把long类型的Ip转为一般Ip类型：xx.xx.xx.xx
      *

@@ -21,7 +21,6 @@ public class DeviceParamSynchronize {
             copyParamValue(srcParamItems,distParamItems);
             IParamWriter writer = new ParamWriter();
             writer.writeDeviceParam(distDeviceParameter);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
