@@ -36,7 +36,7 @@ public class UdmClient {
 
 
     /**
-     * 是否启用DNS
+     * 设备是否启用DNS
      *
      * @param mac 设备物理地址
      * @return 返回true 表示已经启用DNS，支持域名解析; 返回false 表示不支持DNS。
@@ -56,14 +56,15 @@ public class UdmClient {
     }
 
     /**
-     * 登录设备
+     * 登录设备,注意用户名和密码之间要留一个空格，加密时需将空格和用户名一起BASE64编码。
      *
+     * @param userName 登录设备的用户名(BASE64编码后的用户名)
+     * @param password 登录设备的密码 (BASE64编码后的密码）
      * @param mac      设备物理地址
-     * @param userName 登录设备的用户名(BASE64编码)
-     * @param password 登录设备的密码 (BASE64编码）
+     * @param ip       设置IP地址，非必须。
      * @return 登录成功返回 true，登录失败返回false。
      */
-    public boolean login(String mac, String ip, String userName, String password) {
+    public boolean login(String userName, String password,String mac, String ip) {
         return UserAuth.login(userName, password, mac, ip);
     }
 
@@ -98,7 +99,7 @@ public class UdmClient {
 
     /**
      * 同步设备参数，将一设备的参数配置同步到另外一设备，网路配置类的参数除外。
-     * 如果同步的参数种有只读参数，则同步会出现失败。
+     * 如果同步的参数中有只读参数，则同步会出现失败。
      *
      * @param srcDeviceParameter  源设备参数
      * @param distDeviceParameter 目标设备

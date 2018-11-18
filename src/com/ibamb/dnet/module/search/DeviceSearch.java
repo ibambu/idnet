@@ -4,6 +4,8 @@ import com.ibamb.dnet.module.beans.DeviceModel;
 import com.ibamb.dnet.module.constants.Constants;
 import com.ibamb.dnet.module.constants.Control;
 import com.ibamb.dnet.module.core.ContextData;
+import com.ibamb.dnet.module.core.SpecialParams;
+import com.ibamb.dnet.module.instruct.beans.Parameter;
 import com.ibamb.dnet.module.log.UdmLog;
 import com.ibamb.dnet.module.util.Convert;
 
@@ -315,7 +317,6 @@ public class DeviceSearch {
 
                     }
                     devinfo.setPruductName(productNameBuffer.toString().trim());
-
                     //hardware version
 //                    byte[] hardwareVersion = Arrays.copyOfRange(data, 129, 149);//firmware version
 //                    StringBuilder hardwareVersionBuffer = new StringBuilder();
@@ -326,6 +327,7 @@ public class DeviceSearch {
 //                    }
 //                    devinfo.setHardwareVersion(hardwareVersionBuffer.toString());
                 }
+
             }
         } catch (Exception e) {
             UdmLog.error(e);
