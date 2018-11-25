@@ -42,6 +42,7 @@ public class ReplyFrameParser implements IParser {
                 //读取返回数据
                 byte[] dataBytes = Arrays.copyOfRange(replyData, i + 7, i + 7 + information.getLength()
                         - Constants.UDM_TYPE_LENGTH - Constants.UDM_SUB_FRAME_LENGTH);
+                information.setByteData(dataBytes);//返回的原始数据
                 int dataLength = dataBytes.length;//实际参数取值长度
 
                 /**

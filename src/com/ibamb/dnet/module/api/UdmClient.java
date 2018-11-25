@@ -1,12 +1,10 @@
 package com.ibamb.dnet.module.api;
 
+import com.ibamb.dnet.module.beans.DeviceBaseInfo;
 import com.ibamb.dnet.module.beans.DeviceModel;
 import com.ibamb.dnet.module.beans.DeviceParameter;
 import com.ibamb.dnet.module.core.ParameterMapping;
-import com.ibamb.dnet.module.instruct.IParamReader;
-import com.ibamb.dnet.module.instruct.IParamWriter;
-import com.ibamb.dnet.module.instruct.ParamReader;
-import com.ibamb.dnet.module.instruct.ParamWriter;
+import com.ibamb.dnet.module.instruct.*;
 import com.ibamb.dnet.module.search.DeviceSearch;
 import com.ibamb.dnet.module.security.UserAuth;
 import com.ibamb.dnet.module.sync.DeviceParamSynchronize;
@@ -34,15 +32,14 @@ public class UdmClient {
         ParameterMapping.getInstance();
     }
 
-
     /**
-     * 设备是否启用DNS
+     * 获取设备通道基本信息，包括是否支持DNS，支持通道数目等。
      *
-     * @param mac 设备物理地址
-     * @return 返回true 表示已经启用DNS，支持域名解析; 返回false 表示不支持DNS。
+     * @param mac
+     * @return
      */
-    public boolean isDNSEnabled(String mac) {
-        return false;
+    public DeviceBaseInfo getDeviceBaseInfo(String mac) {
+        return DeviceBaseInfoManager.getDeviceBaseInfo(mac);
     }
 
     /**
@@ -52,7 +49,16 @@ public class UdmClient {
      * @return
      */
     public int detectMaxSupportedChannel(String mac) {
-        return 0;
+        DeviceBaseInfo deviceBaseInfo = DeviceBaseInfoManager.getDeviceBaseInfo(mac);
+        int channelNum = 0;
+        if (deviceBaseInfo != null) {
+            for (DeviceBaseInfo.ComBaseInfo comBaseInfo : deviceBaseInfo.getComBaseInfoList()) {
+                if (comBaseInfo.isComEabled()) {
+                    channelNum++;
+                }
+            }
+        }
+        return channelNum;
     }
 
     /**
@@ -64,7 +70,7 @@ public class UdmClient {
      * @param ip       设置IP地址，非必须。
      * @return 登录成功返回 true，登录失败返回false。
      */
-    public boolean login(String userName, String password,String mac, String ip) {
+    public boolean login(String userName, String password, String mac, String ip) {
         return UserAuth.login(userName, password, mac, ip);
     }
 

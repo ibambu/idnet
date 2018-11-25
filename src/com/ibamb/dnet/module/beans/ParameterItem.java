@@ -1,10 +1,21 @@
 package com.ibamb.dnet.module.beans;
 
 
+import java.util.Arrays;
+
 public class ParameterItem {
     private String paramId;
     private String paramValue;
     private String displayValue;
+    private byte[] byteValue;
+
+    public byte[] getByteValue() {
+        return byteValue;
+    }
+
+    public void setByteValue(byte[] byteValue) {
+        this.byteValue = byteValue;
+    }
 
     public String getDisplayValue() {
         return displayValue;
@@ -45,6 +56,7 @@ public class ParameterItem {
                 "paramId='" + paramId + '\'' +
                 ", paramValue='" + paramValue + '\'' +
                 ", displayValue='" + displayValue + '\'' +
+                ", byteValue=" + Arrays.toString(byteValue) +
                 '}';
     }
 }

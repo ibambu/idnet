@@ -2,6 +2,7 @@ package com.ibamb.dnet.module.core;
 
 import com.ibamb.dnet.module.instruct.beans.Parameter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,7 +41,9 @@ public class SpecialParams {
             basicAtEnterMethod.setHexId(0xc1);//参数对应的十六进制ID
             basicAtEnterMethod.setCovertType(1);//参数转换类型
             basicAtEnterMethod.setByteLength(1);//参数所占长度
+            basicAtEnterMethod.setValueMappings(new ArrayList<>());
             parameterMap.put(basicAtEnterMethod.getId(), basicAtEnterMethod);
+            ParameterMapping.getInstance().addParameter(basicAtEnterMethod);
 
             //SYS_DEVICE_WORK_MODE
             Parameter deviceWorkMode = new Parameter();
@@ -53,7 +56,9 @@ public class SpecialParams {
             deviceWorkMode.setHexId(0x161);//参数对应的十六进制ID
             deviceWorkMode.setCovertType(4);//参数转换类型 字符型
             deviceWorkMode.setByteLength(34);//参数所占长度
+            deviceWorkMode.setValueMappings(new ArrayList<>());
             parameterMap.put(deviceWorkMode.getId(), deviceWorkMode);
+            ParameterMapping.getInstance().addParameter(deviceWorkMode);
 
             //SYS_PRODUCTION_NAME
             Parameter productName = new Parameter();
@@ -66,7 +71,9 @@ public class SpecialParams {
             productName.setHexId(0x07);//参数对应的十六进制ID
             productName.setCovertType(4);//参数转换类型 字符型
             productName.setByteLength(20);//参数所占长度
+            productName.setValueMappings(new ArrayList<>());
             parameterMap.put(productName.getId(), productName);
+            ParameterMapping.getInstance().addParameter(productName);
 
             //SYS_FIRMWARE_VER
             Parameter firmWareVersion = new Parameter();
@@ -79,7 +86,9 @@ public class SpecialParams {
             firmWareVersion.setHexId(0x00);//参数对应的十六进制ID
             firmWareVersion.setCovertType(4);//参数转换类型 字符型
             firmWareVersion.setByteLength(20);//参数所占长度
+            firmWareVersion.setValueMappings(new ArrayList<>());
             parameterMap.put(firmWareVersion.getId(), firmWareVersion);
+            ParameterMapping.getInstance().addParameter(firmWareVersion);
         }
     }
 }

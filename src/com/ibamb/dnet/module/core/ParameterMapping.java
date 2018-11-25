@@ -31,6 +31,10 @@ public class ParameterMapping {
         parameterMap = loadParameterMapping();
     }
 
+    public void addParameter(Parameter parameter){
+        parameterMap.put(parameter.getId(),parameter);
+    }
+
     private Map<String,Parameter> loadParameterMapping(){
         BufferedReader bufferedReader = null;
         Map<String, Parameter> mapping = new HashMap();
@@ -171,7 +175,7 @@ public class ParameterMapping {
     }
 
     /**
-     * 当通道ID为空时，建议用于获取参数对应的枚举选项值。因为之是根据TAG随机获取一个通道的某个参数枚举值。
+     * 当通道ID为空时，建议用于获取参数对应的枚举选项值。因为只是根据TAG随机获取一个通道的某个参数枚举值。
      * 理论上各个通道相同类型的参数枚举选项值是一致的。
      *
      * @param tagId

@@ -92,6 +92,7 @@ public class ParamReader implements IParamReader {
                         if (parameterItem.getParamId().equals(info.getType())) {
 
                             String displayValue = info.getData();
+                            parameterItem.setByteValue(info.getByteData());//设置原始值
                             Parameter paramDef = ParameterMapping.getInstance().getMapping(parameterItem.getParamId());
 
                             /**
