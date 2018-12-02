@@ -13,7 +13,7 @@ import com.ibamb.dnet.module.sys.SysManager;
 import java.util.ArrayList;
 
 /**
- * 设备配置客户端，通过调用该类的实例可以读/写设备参数。
+ * 与设备信息交互的客户端，通过调用该类的实例可以读/写设备参数。
  */
 public class UdmClient {
     private static UdmClient udmClient;
@@ -26,17 +26,17 @@ public class UdmClient {
     }
 
     /**
-     * 加载设备参数ID配置表
+     * 创建UdmClient对象实例，加载设备参数ID配置表。
      */
     private UdmClient() {
         ParameterMapping.getInstance();
     }
 
     /**
-     * 获取设备通道基本信息，包括是否支持DNS，支持通道数目等。
+     * 获取设备基本信息，包括设备各个通道是否开启，通道是否支持DNS信息。
      *
-     * @param mac
-     * @return
+     * @param mac 设备物理地址
+     * @return DeviceBaseInfo 设备基本信息，包括所有通道状态，是否支持DNS等信息。
      */
     public DeviceBaseInfo getDeviceBaseInfo(String mac) {
         return DeviceBaseInfoManager.getDeviceBaseInfo(mac);
@@ -45,8 +45,8 @@ public class UdmClient {
     /**
      * 探测设备支持最大的通道，通道从1开始递增编号，可以用于获知设备支持多少个通道。
      *
-     * @param mac
-     * @return
+     * @param mac 设备物理地址
+     * @return channelNum 设备支持的最大通道数。
      */
     public int detectMaxSupportedChannel(String mac) {
         DeviceBaseInfo deviceBaseInfo = DeviceBaseInfoManager.getDeviceBaseInfo(mac);
@@ -67,7 +67,7 @@ public class UdmClient {
      * @param userName 登录设备的用户名(BASE64编码后的用户名)
      * @param password 登录设备的密码 (BASE64编码后的密码）
      * @param mac      设备物理地址
-     * @param ip       设置IP地址，非必须。
+     * @param ip       设备IP地址，非必须。
      * @return 登录成功返回 true，登录失败返回false。
      */
     public boolean login(String userName, String password, String mac, String ip) {
@@ -96,8 +96,8 @@ public class UdmClient {
 
     /**
      * 搜索设备，采用UDP广播合UDP组播两种方式搜索。
-     *
-     * @return 返回设备列表
+     * @param keyword 搜索关键字，支持匹配IP地址、设备MAC和设备名称。
+     * @return DeviceModel 返回设备列表，返回信息包括设备IP地址、设备名称、版本号。
      */
     public ArrayList<DeviceModel> searchDevice(String keyword) {
         return DeviceSearch.searchDevice(keyword);
@@ -105,8 +105,7 @@ public class UdmClient {
 
     /**
      * 同步设备参数，将一设备的参数配置同步到另外一设备，网路配置类的参数除外。
-     * 如果同步的参数中有只读参数，则同步会出现失败。
-     *
+     * 如果同步的参数中有不可以修改参数值，则同步会出现失败。
      * @param srcDeviceParameter  源设备参数
      * @param distDeviceParameter 目标设备
      */
@@ -119,8 +118,9 @@ public class UdmClient {
     /**
      * 读取设备参数
      *
-     * @param deviceParameter 只包设备参数ID的对象
-     * @return 返回设备参数对象，包含参数ID和参数值的对象。如果写入成功择 DeviceParameter 的isSuccessful() 返回 true，否则isSuccessful() 返回false。
+     * @param deviceParameter 只包设备参数ID的对象，传入时DeviceParameter对象中的paramItems包含的ParameterItem只有参数ID，不需要设置参数值。
+     * @return DeviceParameter 返回设备参数对象是输入时传入的同一个对象实例，此时返回的 ParameterItem 已经赋值，包括转译后的值 paramValue 和 转译前的值 byteValue。
+     * 如果写入成功择 DeviceParameter 的isSuccessful() 返回 true，否则isSuccessful() 返回false。
      * 如果是没有登录，则 DeviceParameter 的 isNoPermission() 方法返回 true。
      */
     public DeviceParameter readDeviceParameter(DeviceParameter deviceParameter) {
@@ -131,7 +131,7 @@ public class UdmClient {
     /**
      * 将参数值写入设备
      *
-     * @param deviceParameter
+     * @param deviceParameter 设备参数对象，包含需要修改的参数值集。
      * @return 返回写入设备的参数对象。如果写入成功择 DeviceParameter 的isSuccessful() 返回 true，否则isSuccessful() 返回false。
      * 如果是没有登录，则 DeviceParameter 的 isNoPermission() 方法返回 true。
      */
