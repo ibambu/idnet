@@ -6,6 +6,8 @@ import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class IPUtil {
@@ -310,64 +312,18 @@ public class IPUtil {
         return ipList;
     }
 
-    public static void main(String[] args) {
-        int a = getNetMask("255.255.255.0");
-        String ip = "192.168.0.110";
-        System.out.println(a);
-        String startIp = getBeginIpStr(ip, String.valueOf(a));
-        System.out.println(startIp);
-        String endIp = getEndIpStr(ip, String.valueOf(a));
-        System.out.println(endIp);
-        String[] startIps = startIp.split("\\.");
-        String[] endIps = endIp.split("\\.");
-        List<Integer> ipseg1 = new ArrayList<>();
-        List<Integer> ipseg2 = new ArrayList<>();
-        List<Integer> ipseg3 = new ArrayList<>();
-        List<Integer> ipseg4 = new ArrayList<>();
-        if (!startIps[0].equals(endIps[0])) {
-            Integer ips = Integer.parseInt(startIps[0]);
-            Integer ipe = Integer.parseInt(endIps[0]);
-            for (int i = ips; i <= ipe; i++) {
-                ipseg1.add(i);
-            }
-        } else {
-            ipseg1.add(Integer.parseInt(startIps[0]));
+    public static boolean isDomain(String urls) {
+        boolean isurl = false;
+        String regex = "(((https|http)?://)?([a-z0-9]+[.])|(www.))"
+                + "\\w+[.|\\/]([a-z0-9]{0,})?[[.]([a-z0-9]{0,})]+((/[\\S&&[^,;\u4E00-\u9FA5]]+)+)?([.][a-z0-9]{0,}+|/?)";//设置正则表达式
+
+        Pattern pat = Pattern.compile(regex.trim());//比对
+        Matcher mat = pat.matcher(urls.trim());
+        isurl = mat.matches();//判断是否匹配
+        if (isurl) {
+            isurl = true;
         }
-        if (!startIps[1].equals(endIps[1])) {
-            Integer ips = Integer.parseInt(startIps[1]);
-            Integer ipe = Integer.parseInt(endIps[1]);
-            for (int i = ips; i <= ipe; i++) {
-                ipseg2.add(i);
-            }
-        } else {
-            ipseg2.add(Integer.parseInt(startIps[1]));
-        }
-        if (!startIps[2].equals(endIps[2])) {
-            Integer ipe = Integer.parseInt(endIps[2]);
-            for (int i = 1; i <= ipe; i++) {
-                ipseg3.add(i);
-            }
-        } else {
-            ipseg3.add(Integer.parseInt(startIps[2]));
-        }
-        if (!startIps[3].equals(endIps[3])) {
-            Integer ipe = Integer.parseInt(endIps[3]);
-            for (int i = 1; i < ipe; i++) {
-                ipseg4.add(i);
-            }
-        } else {
-            ipseg4.add(Integer.parseInt(startIps[3]));
-        }
-        for (Integer ip1 : ipseg1) {
-            for (Integer ip2 : ipseg2) {
-                for (Integer ip3 : ipseg3) {
-                    for (Integer ip4 : ipseg4) {
-                        String ipa = String.valueOf(ip1.intValue()) + "." + String.valueOf(ip2.intValue())
-                                + "." + String.valueOf(ip3.intValue()) + "." + String.valueOf(ip4.intValue());
-                        System.out.println(ipa);
-                    }
-                }
-            }
-        }
+        return isurl;
     }
+
 }

@@ -7,6 +7,15 @@ public class Information {
     private int length;// 1 octet
     private String data;// zero or more octets
     private byte[] byteData;
+    private int convertType;
+
+    public int getConvertType() {
+        return convertType;
+    }
+
+    public void setConvertType(int convertType) {
+        this.convertType = convertType;
+    }
 
     public byte[] getByteData() {
         return byteData;

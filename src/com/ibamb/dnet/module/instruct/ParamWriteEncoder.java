@@ -71,6 +71,9 @@ public class ParamWriteEncoder implements IEncoder {
                             break;
                         }
                         case 4: {
+                            if (info.getConvertType() != 0) {
+                                convertType = info.getConvertType();
+                            }
                             if (convertType != Constants.UDM_PARAM_TYPE_CHAR) {
                                 byte[] dataBytes = Convert.int2bytes((int) (Long.parseLong(data)));
                                 byteFrame[pos++] = dataBytes[0];

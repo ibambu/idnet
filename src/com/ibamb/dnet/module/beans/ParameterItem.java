@@ -8,6 +8,15 @@ public class ParameterItem {
     private String paramValue;
     private String displayValue;
     private byte[] byteValue;
+    private int convertType;
+
+    public int getConvertType() {
+        return convertType;
+    }
+
+    public void setConvertType(int convertType) {
+        this.convertType = convertType;
+    }
 
     public byte[] getByteValue() {
         return byteValue;

@@ -15,6 +15,16 @@ public class DeviceParameter {
     private String channelId;//通道ID(1-32)，如果是非通道参数可以为空
     private List<ParameterItem> paramItems;
     private int resultCode;
+    private boolean isChannelCanDNS;//当前通道是否支持DNS解析
+
+
+    public boolean isChannelCanDNS() {
+        return isChannelCanDNS;
+    }
+
+    public void setChannelCanDNS(boolean channelCanDNS) {
+        isChannelCanDNS = channelCanDNS;
+    }
 
     public int getResultCode() {
         return resultCode;
