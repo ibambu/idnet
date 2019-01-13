@@ -81,7 +81,7 @@ public class UdmClient {
      * @return 退出成功返回true，退出失败返回false。
      */
     public boolean logout(String mac) {
-        return false;
+        return SysManager.logout(mac);
     }
 
     /**
@@ -95,7 +95,18 @@ public class UdmClient {
     }
 
     /**
+     * 重启设备
+     *
+     * @param mac 设备物理地址
+     * @return 成功返回true，失败返回false。
+     */
+    public boolean reboot(String mac) {
+        return SysManager.reboot(mac);
+    }
+
+    /**
      * 搜索设备，采用UDP广播合UDP组播两种方式搜索。
+     *
      * @param keyword 搜索关键字，支持匹配IP地址、设备MAC和设备名称。
      * @return DeviceModel 返回设备列表，返回信息包括设备IP地址、设备名称、版本号。
      */
@@ -106,6 +117,7 @@ public class UdmClient {
     /**
      * 同步设备参数，将一设备的参数配置同步到另外一设备，网路配置类的参数除外。
      * 如果同步的参数中有不可以修改参数值，则同步会出现失败。
+     *
      * @param srcDeviceParameter  源设备参数
      * @param distDeviceParameter 目标设备
      */
