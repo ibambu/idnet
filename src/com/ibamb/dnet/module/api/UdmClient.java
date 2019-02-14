@@ -3,14 +3,17 @@ package com.ibamb.dnet.module.api;
 import com.ibamb.dnet.module.beans.DeviceBaseInfo;
 import com.ibamb.dnet.module.beans.DeviceModel;
 import com.ibamb.dnet.module.beans.DeviceParameter;
+import com.ibamb.dnet.module.beans.ParameterItem;
 import com.ibamb.dnet.module.core.ParameterMapping;
 import com.ibamb.dnet.module.instruct.*;
+import com.ibamb.dnet.module.instruct.beans.Parameter;
 import com.ibamb.dnet.module.search.DeviceSearch;
 import com.ibamb.dnet.module.security.UserAuth;
 import com.ibamb.dnet.module.sync.DeviceParamSynchronize;
 import com.ibamb.dnet.module.sys.SysManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 与设备信息交互的客户端，通过调用该类的实例可以读/写设备参数。
@@ -150,6 +153,54 @@ public class UdmClient {
     public DeviceParameter writeDeviceParameter(DeviceParameter deviceParameter) {
         IParamWriter paramWriter = new ParamWriter();
         return paramWriter.writeDeviceParam(deviceParameter);
+    }
+
+    /**
+     * 导出设置
+     *
+     * @param mac 设备物理地址
+     * @return ParameterItem 设备参数集合
+     */
+    public List<ParameterItem> exportDeviceParameters(String mac) {
+        int maxChannel = detectMaxSupportedChannel(mac);
+        List<ParameterItem> parameterItems = new ArrayList<>();
+        for (int i = 0; i < maxChannel; i++) {
+            /**
+             * 一个个通道读取，0通道表示非通道参数。
+             */
+            DeviceParameter deviceParameter = new DeviceParameter(mac, String.valueOf(i));
+            List<Parameter> parameters = ParameterMapping.getInstance().getChannelParamDef(i);
+            List<ParameterItem> items = new ArrayList<>();
+            for (Parameter parameter : parameters) {
+                /**
+                 * 部分私有参数不能导出，例如IP地址，MAC地址。
+                 */
+                if (parameter.isPublic()) {
+                    items.add(new ParameterItem(parameter.getId(), null));
+                }
+            }
+            deviceParameter.setParamItems(items);
+            /**
+             * 读取通道参数值
+             */
+            readDeviceParameter(deviceParameter);
+            parameterItems.addAll(deviceParameter.getParamItems());
+
+        }
+        return parameterItems;
+    }
+
+    /**
+     * 导入设置
+     *
+     * @param mac 设备物理地址
+     * @return 成功返回 true,失败返回false
+     */
+    public boolean importDeviceParameters(String mac, List<ParameterItem> parameterItems) {
+        DeviceParameter deviceParameter = new DeviceParameter(mac, "-1");
+        deviceParameter.setParamItems(parameterItems);
+        writeDeviceParameter(deviceParameter);
+        return deviceParameter.isSuccessful();
     }
 
 }
