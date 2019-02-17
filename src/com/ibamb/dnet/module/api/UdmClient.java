@@ -1,18 +1,19 @@
 package com.ibamb.dnet.module.api;
 
-import com.ibamb.dnet.module.beans.DeviceBaseInfo;
-import com.ibamb.dnet.module.beans.DeviceModel;
-import com.ibamb.dnet.module.beans.DeviceParameter;
-import com.ibamb.dnet.module.beans.ParameterItem;
+import com.ibamb.dnet.module.beans.*;
 import com.ibamb.dnet.module.core.ParameterMapping;
 import com.ibamb.dnet.module.instruct.*;
 import com.ibamb.dnet.module.instruct.beans.Parameter;
 import com.ibamb.dnet.module.search.DeviceSearch;
+import com.ibamb.dnet.module.security.AESUtil;
+import com.ibamb.dnet.module.security.Base64;
 import com.ibamb.dnet.module.security.UserAuth;
 import com.ibamb.dnet.module.sync.DeviceParamSynchronize;
 import com.ibamb.dnet.module.sys.SysManager;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -61,7 +62,8 @@ public class UdmClient {
                 }
             }
         }
-        return channelNum;
+
+        return channelNum == 0 ? 1 : channelNum;
     }
 
     /**
@@ -159,18 +161,22 @@ public class UdmClient {
      * 导出设置
      *
      * @param mac 设备物理地址
-     * @return ParameterItem 设备参数集合
+     * @return 返回设备参数密文
      */
-    public List<ParameterItem> exportDeviceParameters(String mac) {
+    public DataModel<String> exportDeviceParameters(String mac) {
+
+        DataModel<String> dataModel = new DataModel<>();
+
         int maxChannel = detectMaxSupportedChannel(mac);
-        List<ParameterItem> parameterItems = new ArrayList<>();
-        for (int i = 0; i < maxChannel; i++) {
+        System.out.println(maxChannel);
+        StringBuilder paramBuffer = new StringBuilder();
+        DeviceParameter deviceParameter = new DeviceParameter(mac, String.valueOf(-1));
+        List<ParameterItem> items = new ArrayList<>();
+        for (int i = 0; i < maxChannel + 1; i++) {
             /**
              * 一个个通道读取，0通道表示非通道参数。
              */
-            DeviceParameter deviceParameter = new DeviceParameter(mac, String.valueOf(i));
             List<Parameter> parameters = ParameterMapping.getInstance().getChannelParamDef(i);
-            List<ParameterItem> items = new ArrayList<>();
             for (Parameter parameter : parameters) {
                 /**
                  * 部分私有参数不能导出，例如IP地址，MAC地址。
@@ -180,27 +186,69 @@ public class UdmClient {
                 }
             }
             deviceParameter.setParamItems(items);
-            /**
-             * 读取通道参数值
-             */
-            readDeviceParameter(deviceParameter);
-            parameterItems.addAll(deviceParameter.getParamItems());
-
         }
-        return parameterItems;
+        /**
+         * 读取通道参数值
+         */
+        readDeviceParameter(deviceParameter);
+        if (deviceParameter.isSuccessful()) {
+            for (ParameterItem item : items) {
+                paramBuffer.append(item.getParamId() + "~" + item.getParamValue()).append('\001');
+            }
+            String content = AESUtil.aesEncrypt(paramBuffer.toString(), "8@jvcvIWun4SlA3!");
+            dataModel.setCode(1);
+            dataModel.setData(content);
+        } else {
+            dataModel.setCode(0);
+        }
+        return dataModel;
     }
 
     /**
      * 导入设置
      *
-     * @param mac 设备物理地址
+     * @param mac               设备物理地址
+     * @param paramEncodeString 设备参数密文
      * @return 成功返回 true,失败返回false
      */
-    public boolean importDeviceParameters(String mac, List<ParameterItem> parameterItems) {
+    public boolean importDeviceParameters(String mac, String paramEncodeString) {
         DeviceParameter deviceParameter = new DeviceParameter(mac, "-1");
-        deviceParameter.setParamItems(parameterItems);
+        deviceParameter.setParamItems(new ArrayList<>());
+        String data = AESUtil.aesDecrypt(paramEncodeString, "8@jvcvIWun4SlA3!");
+
+        String[] parameterItems = data.split(String.valueOf('\001'));
+        for (String item : parameterItems) {
+            String[] paramItem = item.split("~");
+            if (paramItem.length > 1) {
+                deviceParameter.getParamItems().add(new ParameterItem(paramItem[0], paramItem[1]));
+            }
+        }
         writeDeviceParameter(deviceParameter);
         return deviceParameter.isSuccessful();
+    }
+
+
+    public static void main(String[] args) {
+
+        String mac = "2c:ac:44:00:17:c5";
+        System.out.println(mac.replaceAll(":","-"));
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        System.out.println(sdf.format(new Date()));
+        ParameterMapping.getInstance();
+        String userName = Base64.encode("admin ".getBytes());
+        String password = Base64.encode("admin".getBytes());
+//        boolean isSuccess = UdmClient.getInstance().login(userName, password, mac, null);
+//        System.out.println(isSuccess);
+        if (true) {
+            DataModel<String> content = UdmClient.getInstance().exportDeviceParameters(mac);
+            System.out.println(content.getData());
+            System.out.println(AESUtil.aesDecrypt(content.getData(), "8@jvcvIWun4SlA3!"));
+
+//            boolean importReusult = UdmClient.getInstance().importDeviceParameters(mac,aa);
+//            System.out.println(importReusult);
+        }
+
     }
 
 }

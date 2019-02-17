@@ -74,9 +74,19 @@ public class ParamWriter implements IParamWriter {
             instructFrame.setLength(sendFrameLength);
             IEncoder encoder = new ParamWriteEncoder();
             //生成发送报文
+            System.out.print("send:");
             byte[] sendData = encoder.encode(instructFrame, Control.SET_PARAMETERS);
+            for(int i=0;i<sendData.length;i++){
+                System.out.print(Integer.toHexString(sendData[i])+" ");
+            }
+            System.out.println();
             //发送报文
+            System.out.print("replay:");
             byte[] replyData = sender.sendByUnicast(sendData, replyFrameLength, deviceParameter.getIp());
+            for(int i=0;i<replyData.length;i++){
+                System.out.print(Integer.toHexString(replyData[i])+" ");
+            }
+            System.out.println();
             //解析返回报文
             IParser parser = new ReplyFrameParser();
             ReplyFrame replyFrame = parser.parse(replyData);

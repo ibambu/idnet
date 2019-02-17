@@ -75,9 +75,17 @@ public class ParamReader implements IParamReader {
             //生成发送报文
             byte[] sendData = encoder.encode(instructFrame, Control.GET_PARAMETERS);
             //发送报文
-
+//            System.out.println("send:");
+//            for(int i=0;i<sendData.length;i++){
+//                System.out.print(Integer.toHexString(sendData[i])+" ");
+//            }
+//            System.out.println();
             byte[] replyData = sender.sendByUnicast(sendData, replyFrameLength, deviceParameter.getIp());
-
+//            System.out.println("reply:");
+//            for(int i=0;i<replyData.length;i++){
+//                System.out.print(Integer.toHexString(replyData[i])+" ");
+//            }
+//            System.out.println();
             //解析返回报文
             ReplyFrame replyFrame = parser.parse(replyData);
 

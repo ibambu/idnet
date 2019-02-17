@@ -114,6 +114,7 @@ public class ParameterMapping {
         for (Iterator<String> it = parameterMap.keySet().iterator(); it.hasNext(); ) {
             String paramId = it.next();
             Parameter parameter = parameterMap.get(paramId);
+            System.out.println(parameter.toString());
             if (parameter.getChannelId() == channelId) {
                 channelParamList.add(parameter);
             }

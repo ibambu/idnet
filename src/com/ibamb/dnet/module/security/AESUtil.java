@@ -1,9 +1,12 @@
 package com.ibamb.dnet.module.security;
 
+import com.ibamb.dnet.module.file.FileReader;
+
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -137,12 +140,16 @@ public class AESUtil {
     }
 
     public static void main(String[] args){
-        String a ="ABC";
-        String passwd = "12345678";
-        String aencode = AESUtil.aesEncrypt(a,passwd);
-        String dencode = AESUtil.aesDecrypt(aencode,passwd);
-        System.out.println(a);
+        String passwd = "1qaz2wsx3edc4rfv";
+        List<String> content = FileReader.readTxtFileToList("/home/luotao/h-work/apps/doc/CONEXTOP-PARAMETER-MAPPING.txt",false);
+
+        StringBuilder buf = new StringBuilder();
+        for(String data : content){
+            buf.append(data);
+        }
+        String aencode = AESUtil.aesEncrypt(buf.toString(),passwd);
         System.out.println(aencode);
+        String dencode = AESUtil.aesDecrypt(aencode,passwd);
         System.out.println(dencode);
     }
 }
