@@ -140,7 +140,7 @@ public class AESUtil {
     }
 
     public static void main(String[] args){
-        String passwd = "1qaz2wsx3edc4rfv";
+        String passwd = "pSP1@v3*eVtwZ!qV";
         List<String> content = FileReader.readTxtFileToList("/home/luotao/h-work/apps/doc/CONEXTOP-PARAMETER-MAPPING.txt",false);
 
         StringBuilder buf = new StringBuilder();

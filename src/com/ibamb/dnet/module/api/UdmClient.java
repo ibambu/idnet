@@ -6,14 +6,11 @@ import com.ibamb.dnet.module.instruct.*;
 import com.ibamb.dnet.module.instruct.beans.Parameter;
 import com.ibamb.dnet.module.search.DeviceSearch;
 import com.ibamb.dnet.module.security.AESUtil;
-import com.ibamb.dnet.module.security.Base64;
 import com.ibamb.dnet.module.security.UserAuth;
 import com.ibamb.dnet.module.sync.DeviceParamSynchronize;
 import com.ibamb.dnet.module.sys.SysManager;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -168,7 +165,6 @@ public class UdmClient {
         DataModel<String> dataModel = new DataModel<>();
 
         int maxChannel = detectMaxSupportedChannel(mac);
-        System.out.println(maxChannel);
         StringBuilder paramBuffer = new StringBuilder();
         DeviceParameter deviceParameter = new DeviceParameter(mac, String.valueOf(-1));
         List<ParameterItem> items = new ArrayList<>();
@@ -230,24 +226,25 @@ public class UdmClient {
 
     public static void main(String[] args) {
 
-        String mac = "2c:ac:44:00:17:c5";
-        System.out.println(mac.replaceAll(":","-"));
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        System.out.println(sdf.format(new Date()));
-        ParameterMapping.getInstance();
-        String userName = Base64.encode("admin ".getBytes());
-        String password = Base64.encode("admin".getBytes());
-//        boolean isSuccess = UdmClient.getInstance().login(userName, password, mac, null);
-//        System.out.println(isSuccess);
-        if (true) {
-            DataModel<String> content = UdmClient.getInstance().exportDeviceParameters(mac);
-            System.out.println(content.getData());
-            System.out.println(AESUtil.aesDecrypt(content.getData(), "8@jvcvIWun4SlA3!"));
-
-//            boolean importReusult = UdmClient.getInstance().importDeviceParameters(mac,aa);
-//            System.out.println(importReusult);
-        }
+        String mac = "2c.ac:44:00:17:c5";
+        System.out.println(mac.replaceAll("\\.","-"));
+//
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        System.out.println(sdf.format(new Date()));
+//        ParameterMapping.getInstance();
+//        String userName = Base64.encode("admin ".getBytes());
+//        String password = Base64.encode("admin".getBytes());
+////        boolean isSuccess = UdmClient.getInstance().login(userName, password, mac, null);
+////        System.out.println(isSuccess);
+//        if (true) {
+//            DataModel<String> content = UdmClient.getInstance().exportDeviceParameters(mac);
+//            System.out.println(content.getData());
+//            System.out.println(AESUtil.aesDecrypt(content.getData(), "8@jvcvIWun4SlA3!"));
+//
+////            boolean importReusult = UdmClient.getInstance().importDeviceParameters(mac,aa);
+////            System.out.println(importReusult);
+//        }
+//        UdmClient.getInstance().searchDevice(null);
 
     }
 

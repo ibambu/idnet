@@ -47,11 +47,12 @@ public class ParameterMapping {
                 stringBuilder.append(readLine);
             }
 
-            String content = AESUtil.aesDecrypt(stringBuilder.toString(),"1qaz2wsx3edc4rfv");
+            String content = AESUtil.aesDecrypt(stringBuilder.toString(),"pSP1@v3*eVtwZ!qV");
 
             String[] paramArrays = content.split("&&");
             for (String typeLine : paramArrays) {
                 String[] dataArray = typeLine.split("#");
+                System.out.println(Arrays.toString(dataArray));
                 int cellCount = 0;
                 Parameter param = new Parameter();
                 param.setParamType(Integer.parseInt(dataArray[cellCount++]));//参数类型

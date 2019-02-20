@@ -308,13 +308,12 @@ public class DeviceSearch {
                     }
                     devinfo.setFirmwareVersion(versionBuffer.toString().trim());
                     //Product Name
-                    byte[] productName = Arrays.copyOfRange(data, 106, 126);//firmware version
+                    byte[] productName = Arrays.copyOfRange(data, 106, 126);//product name
                     StringBuilder productNameBuffer = new StringBuilder();
                     for (int k = 0; k < productName.length; k++) {
 
                         char c = (char) productName[k];
                         productNameBuffer.append(c);
-
                     }
                     devinfo.setPruductName(productNameBuffer.toString().trim());
                     //hardware version
@@ -326,6 +325,7 @@ public class DeviceSearch {
 //
 //                    }
 //                    devinfo.setHardwareVersion(hardwareVersionBuffer.toString());
+                    System.out.println(devinfo.toString());
                 }
 
             }
