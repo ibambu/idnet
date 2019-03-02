@@ -4,8 +4,6 @@ import com.ibamb.dnet.module.beans.RetMessage;
 import com.ibamb.dnet.module.constants.Constants;
 
 import java.io.*;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
