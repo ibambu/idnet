@@ -1,17 +1,26 @@
 package com.ibamb.dnet.module.api;
 
 import com.ibamb.dnet.module.beans.*;
+import com.ibamb.dnet.module.constants.Constants;
 import com.ibamb.dnet.module.core.ParameterMapping;
+import com.ibamb.dnet.module.file.*;
 import com.ibamb.dnet.module.instruct.*;
 import com.ibamb.dnet.module.instruct.beans.Parameter;
+import com.ibamb.dnet.module.log.UdmLog;
 import com.ibamb.dnet.module.search.DeviceSearch;
 import com.ibamb.dnet.module.security.AESUtil;
 import com.ibamb.dnet.module.security.UserAuth;
 import com.ibamb.dnet.module.sync.DeviceParamSynchronize;
 import com.ibamb.dnet.module.sys.SysManager;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 /**
@@ -222,6 +231,72 @@ public class UdmClient {
         }
         writeDeviceParameter(deviceParameter);
         return deviceParameter.isSuccessful();
+    }
+
+    /**
+     * 设备升级，可指定版本号。如果没有指定版本号，则升级到最新版本。
+     *
+     * @param productName 产品型号
+     * @param deviceIp    设备物理IP地址
+     * @param version     版本号,不指定版本号表示升级到最新版本。
+     * @param localDir    升级文件本地暂存路径
+     * @return 成功返回 1,返回其他表示失败。
+     */
+    public RetMessage updateVersion(String productName, String deviceIp, String version, String localDir) {
+
+        RetMessage retMessage = new RetMessage(false);
+        retMessage.setCode(1);
+        try {
+            /**
+             * 检查 localDir 目录下是否有最新版本文件，如果有则不下载，否则下载版本描述文件。
+             */
+            int reply = FTPClientHelper.tryDefalutConnect();
+            if (reply == 0) {
+                String localVersionFile = localDir + "/" + FtpConstants.VERSON_CMC_MAGIC;
+                reply = FTPClientHelper.download(FtpConstants.VERSON_CMC_MAGIC, localVersionFile);
+                /**
+                 * 如果下载成功，则解析版本描述文件，获取升级包文件名。
+                 */
+                if (reply == FtpConstants.DOWNLOAD_SUCCESS) {
+                    List<ProductVersion> productVersionList = FileUtil.loadProductVersionDescrible(localVersionFile);
+                    for (ProductVersion productVersion : productVersionList) {
+                        if (productName.equals(productVersion.getProductName())) {
+                            /**
+                             * 如果没有指定版本号，则下载最新版本。否则下载指定版本。
+                             */
+                            if (!version.equalsIgnoreCase(productVersion.getProductVersion())) {
+                                String updateFileName = productVersion.getVersionFile();
+                                if (version != null && version.trim().length() > 0) {
+                                    for (ProductVersion.HistoryVersion historyVersion : productVersion.getHistoryVersions()) {
+                                        if (version.equalsIgnoreCase(historyVersion.getVersion())) {
+                                            updateFileName = historyVersion.getFileName();
+                                            break;
+                                        }
+                                    }
+                                }
+                                reply = FTPClientHelper.download(updateFileName, localDir + "/" + updateFileName);
+                                /**
+                                 * 开始升级
+                                 */
+                                if (reply == FtpConstants.DOWNLOAD_SUCCESS) {
+                                    DeviceUpdate deviceUpdate = new DeviceUpdate(localDir + "/" + updateFileName, deviceIp);
+                                    retMessage = deviceUpdate.update();
+                                }
+                            }
+                            break;
+                        }
+                    }
+                } else {
+                    retMessage.setCode(-1);
+                }
+            } else {
+                retMessage.setCode(-1);
+            }
+
+        } catch (Exception e) {
+            retMessage.setCode(-1);
+        }
+        return retMessage;
     }
 
 

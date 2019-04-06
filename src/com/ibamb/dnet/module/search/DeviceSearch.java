@@ -4,8 +4,6 @@ import com.ibamb.dnet.module.beans.DeviceModel;
 import com.ibamb.dnet.module.constants.Constants;
 import com.ibamb.dnet.module.constants.Control;
 import com.ibamb.dnet.module.core.ContextData;
-import com.ibamb.dnet.module.core.SpecialParams;
-import com.ibamb.dnet.module.instruct.beans.Parameter;
 import com.ibamb.dnet.module.log.UdmLog;
 import com.ibamb.dnet.module.util.Convert;
 
@@ -333,10 +331,6 @@ public class DeviceSearch {
             UdmLog.error(e);
         }
         return devinfo;
-    }
-
-    public static void main(String[] args){
-        DeviceSearch.searchDevice(null);
     }
 }
 
